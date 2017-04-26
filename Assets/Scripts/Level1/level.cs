@@ -5,10 +5,12 @@ using UnityEngine;
 public class level : MonoBehaviour 
 {
     private GameObject player;
+    private List<Collider> mEnemyEnters;
 
     void Awake()
     {
-        this.GetComponent<skill>().del_boom += OnBoom;
+        this.GetComponent<skill>().del_damage += OnDamage;
+
     }
 
 	// Use this for initialization
@@ -22,14 +24,33 @@ public class level : MonoBehaviour
         player = PhotonNetwork.Instantiate("player", new Vector3(0, 0.5f, 0), Quaternion.identity, 0);
         player.name = "player";
 
-        player.AddComponent<skill>();
-
         playerctrl ctrl = player.AddComponent<playerctrl>();
         ctrl.player = player.transform;
     }
 
-    void OnBoom(GameObject boom, float damage)
+
+    void OnEnemyTriggerEnter(Collider collider)
     {
-        
+        mEnemyEnters.Add(collider);
+    }
+
+    void OnEnemyTriggerExit(Collider collider)
+    {
+        mEnemyEnters.Remove(collider);
+    }
+
+    void OnDamage(GameObject ammo, data.skill skill)
+    {
+        if (skill.name == "Boom")
+        {
+            foreach (var item in mEnemyEnters)
+            {
+                if (item.gameObject == ammo)
+                {
+                    Debug.LogError("Boom");
+                    break;
+                }
+            }
+        }
     }
 }

@@ -41,7 +41,7 @@ public class level0 : MonoBehaviour
     {  
         Debug.Log("We have joined a room.");
 
-        if(isCreater==false)
+        //if(isCreater==false)
         {
             SceneManager.LoadScene(1);
         }

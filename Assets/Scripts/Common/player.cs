@@ -5,6 +5,13 @@ using UnityEngine;
 public class player : MonoBehaviour 
 {
     private float mHP;
+	private bool mIsEnemy;
+
+    public delegate void EnemyTriggerEnter(Collider collider);
+    public EnemyTriggerEnter del_EnemyTriggerEnter;
+
+    public delegate void EnemyTriggerExit(Collider collider);
+    public EnemyTriggerExit del_EnemyTriggerExit;
 
     void Awake()
     {
@@ -17,9 +24,35 @@ public class player : MonoBehaviour
         init();
 	}
 
-    void OnTriggerStay(Collider collider)
+    void OnPhotonInstantiate(PhotonMessageInfo info)
     {
-        Debug.LogError("OnTriggerStay");
+        Debug.LogError("OnPhotonInstantiate");
+    }
+
+    void OnTriggerEnter(Collider collider)
+    {
+        Debug.LogError("OnTriggerEnter");
+
+        if (mIsEnemy)
+        {
+            if (del_EnemyTriggerEnter != null)
+            {
+                del_EnemyTriggerEnter(collider);
+            }
+        }
+    }
+
+    void OnTriggerExit(Collider collider)
+    {
+        Debug.LogError("OnTriggerExit");
+
+        if (mIsEnemy)
+        {
+            if (del_EnemyTriggerExit != null)
+            {
+                del_EnemyTriggerExit(collider);
+            }
+        }
     }
 
 //    void OnDamage(float damage)
@@ -30,6 +63,11 @@ public class player : MonoBehaviour
     void init()
     {
         mHP = 100;
+
+		if (this.GetComponent<PhotonView> ().isMine == false) 
+        {
+            mIsEnemy = true;
+		}
     }
 
     void OnDestroy()
