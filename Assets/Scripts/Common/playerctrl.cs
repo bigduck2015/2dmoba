@@ -20,5 +20,10 @@ public class playerctrl : MonoBehaviour
         float move = Mathf.MoveTowards(player.position.x, target, 0.1f);
         //Debug.LogError("target = "+ target);
         player.position = new Vector3(move, 0.5f, 0);
+
+        if (Input.GetKeyUp(KeyCode.U))
+        {
+            player.GetComponent<skill>().StartRollBoomCo();
+        }
 	}
 }
