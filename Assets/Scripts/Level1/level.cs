@@ -27,7 +27,9 @@ public class level : MonoBehaviour
         playerctrl ctrl = player.AddComponent<playerctrl>();
         ctrl.player = player.transform;
 
-        player.GetComponent<skill>().init();
+        player.AddComponent<player>();
+        player.AddComponent<skill>().init();
+
     }
 
 

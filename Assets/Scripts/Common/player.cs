@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class player : MonoBehaviour 
 {
-    public float HP;
-	private bool mIsEnemy;
+    public struct playerInfo
+    {
+        public string name;
+        public float hp;
+    }
+
+    playerInfo mInfo;
 
     private List<int> mEnters = new List<int>();
 
@@ -15,7 +20,7 @@ public class player : MonoBehaviour
 
     void Awake()
     {
-        //this.GetComponent<skill>().del_damage += OnDamage;
+        
     }
 
 	// Use this for initialization
@@ -24,26 +29,9 @@ public class player : MonoBehaviour
         init();
 	}
 
-    void OnPhotonInstantiate(PhotonMessageInfo info)
-    {
-        if (info.sender.IsLocal == false)
-        {
-            Debug.LogError("On Enemy PhotonInstantiate");
-            mIsEnemy = true;
-            this.gameObject.name = "enemy";
-        }
-    }
-
     void OnTriggerEnter(Collider collider)
     {
-        if (mIsEnemy)
-        {
-            Debug.LogError("On Enemy TriggerEnter");
-        }
-        else
-        {
-            Debug.LogError("On Player TriggerEnter");
-        }
+        Debug.LogError("On Player TriggerEnter");
 
         var view = collider.gameObject.GetComponent<PhotonView>();
 
@@ -56,35 +44,14 @@ public class player : MonoBehaviour
 
     void OnTriggerExit(Collider collider)
     {
-        if (mIsEnemy)
-        {
-            Debug.LogError("On Enemy TriggerExit");
-        }
-        else
-        {
-            Debug.LogError("On Player TriggerExit");
-        }
+        Debug.LogError("On Player TriggerExit");
 
         var view = collider.gameObject.GetComponent<PhotonView>();
+
         if (view != null)
         {
             var id = view.viewID;
             mEnters.Remove(id);
-        }
-    }
-
-    public void CheckDamage(GameObject ammo, data.skill skill)
-    {
-        var id = ammo.GetComponent<PhotonView>().viewID;
-
-        if (skill.name == "Boom")
-        {
-            if (mEnters.Contains(id))
-            {
-                Debug.LogError("Boom");
-                mEnters.Remove(id);
-                this.GetComponent<PhotonView>().RPC("OnRPCDamage", PhotonTargets.Others, id, skill.damage);
-            }
         }
     }
 
@@ -101,10 +68,10 @@ public class player : MonoBehaviour
     {
         Debug.LogError("OnRPCDamageConfirm = " + damage);
 
-        var enemy = GameObject.Find("enemy").GetComponent<player>();
-        enemy.HP -= damage;
+        var enemy = GameObject.Find("enemy").GetComponent<enemy>();
+        enemy.mInfo.hp -= damage;
 
-        UI.Instance.SetEnemyHP(enemy.HP);
+        UI.Instance.SetEnemyHP(enemy.mInfo.hp);
     }
 
     //攻击判定
@@ -118,11 +85,11 @@ public class player : MonoBehaviour
         {
             if (mEnters.Contains(id))
             {
-                HP -= damage;
+                mInfo.hp -= damage;
                 enemy.GetComponent<PhotonView>().RPC("OnRPCDamageConfirm", PhotonTargets.Others, damage);
                 mEnters.Remove(id);
 
-                UI.Instance.SetPlayerHP(HP);
+                UI.Instance.SetPlayerHP(mInfo.hp);
 
                 break;
             }
@@ -141,12 +108,20 @@ public class player : MonoBehaviour
 
     void init()
     {
-        HP = 100;
+        mInfo = new playerInfo();
+        mInfo.name = "";
+        mInfo.hp = 100;
 
+
+    }
+
+    public void SendPlayerInfo()
+    {
+        this.GetComponent<PhotonView>().RPC("OnPlayerInfo", PhotonTargets.Others, mInfo.name, mInfo.hp);
     }
 
     void OnDestroy()
     {
-        //this.GetComponent<skill>().del_damage -= OnDamage;
+        
     }
 }

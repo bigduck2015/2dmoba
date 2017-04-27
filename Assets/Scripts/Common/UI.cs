@@ -7,8 +7,8 @@ public class UI : MonoBehaviour
 {
     public static UI Instance;
 
-    Text player;
-    Text enemy;
+    public Text player;
+    public Text enemy;
 
 	// Use this for initialization
 	void Awake () 

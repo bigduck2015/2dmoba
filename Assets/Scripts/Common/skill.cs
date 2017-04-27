@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class skill : MonoBehaviour 
 {
+    public Dictionary<string, skillInfo> Dic_Skill = new Dictionary<string, skillInfo>();
+
+    public struct skillInfo
+    {
+        public string name;
+        public float damage;
+    }
+
 	private Coroutine mRollBoomCo;
     private Coroutine mRollBoomCDCo;
 
@@ -18,11 +26,11 @@ public class skill : MonoBehaviour
 
     public void init()
     {
-        data.skill boom = new data.skill();
+        skillInfo boom = new skillInfo();
         boom.name = "Boom";
         boom.damage = 10f;
 
-        data.Instance.Dic_Skill.Add("Boom", boom);
+        Dic_Skill.Add("Boom", boom);
     }
 
     public void StartRollBoomCo()
@@ -45,6 +53,9 @@ public class skill : MonoBehaviour
         var enemy = GameObject.Find("enemy");
         var Boom = PhotonNetwork.Instantiate("Boom", Vector3.zero, Quaternion.identity, 0).transform;
         Boom.position = new Vector3(transform.position.x, Boom.position.y, Boom.position.z);
+
+
+
         var Target = Boom.position + new Vector3(5, 0, 0);
 
 		while (true) 
@@ -55,7 +66,7 @@ public class skill : MonoBehaviour
             {
                 Debug.LogError("RollBoomCo break");
 
-                enemy.GetComponent<player>().CheckDamage(Boom.gameObject, data.Instance.Dic_Skill["Boom"]);
+                enemy.GetComponent<enemy>().CheckDamage(Boom.gameObject, Dic_Skill["Boom"]);
 
                 PhotonNetwork.Destroy(Boom.gameObject);
 
