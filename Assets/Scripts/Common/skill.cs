@@ -7,18 +7,20 @@ public class skill : MonoBehaviour
 	private Coroutine mRollBoomCo;
     private Coroutine mRollBoomCDCo;
 
-    public delegate void damagedel(GameObject boom, data.skill damage);
-    public damagedel del_damage;
+//    public delegate void damagedel(GameObject boom, data.skill damage);
+//    public damagedel del_damage;
 
 	// Use this for initialization
 	void Start () 
 	{
-        init();
+
 	}
 
-    void init()
+    public void init()
     {
         data.skill boom = new data.skill();
+        boom.name = "Boom";
+        boom.damage = 10f;
 
         data.Instance.Dic_Skill.Add("Boom", boom);
     }
@@ -40,10 +42,9 @@ public class skill : MonoBehaviour
 
 	IEnumerator RollBoomCo()
 	{
-        var player = GameObject.Find("player").transform;
-
+        var enemy = GameObject.Find("enemy");
         var Boom = PhotonNetwork.Instantiate("Boom", Vector3.zero, Quaternion.identity, 0).transform;
-        Boom.position = new Vector3(player.position.x, Boom.position.y, Boom.position.z);
+        Boom.position = new Vector3(transform.position.x, Boom.position.y, Boom.position.z);
         var Target = Boom.position + new Vector3(5, 0, 0);
 
 		while (true) 
@@ -54,10 +55,7 @@ public class skill : MonoBehaviour
             {
                 Debug.LogError("RollBoomCo break");
 
-                if (del_damage != null)
-                {
-                    del_damage(Boom.gameObject, data.Instance.Dic_Skill["Boom"]);    
-                }
+                enemy.GetComponent<player>().CheckDamage(Boom.gameObject, data.Instance.Dic_Skill["Boom"]);
 
                 PhotonNetwork.Destroy(Boom.gameObject);
 

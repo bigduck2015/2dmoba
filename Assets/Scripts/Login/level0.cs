@@ -28,7 +28,8 @@ public class level0 : MonoBehaviour
 
     void OnFailedToConnectToPhoton() //连接Photon服务器失败  
     {  
-        Debug.Log("Failed to connect to Photon");  
+        Debug.Log("Failed to connect to Photon"); 
+        Btn_Match.SetActive(true);
     }
 
     void OnCreatedRoom()                 //创建房间  
@@ -41,7 +42,7 @@ public class level0 : MonoBehaviour
     {  
         Debug.Log("We have joined a room.");
 
-        //if(isCreater==false)
+        if(isCreater==false)
         {
             SceneManager.LoadScene(1);
         }
@@ -63,6 +64,7 @@ public class level0 : MonoBehaviour
     {
         RoomOptions roomOptions = new RoomOptions() { isVisible = false, maxPlayers = 2 };
         PhotonNetwork.JoinOrCreateRoom("123", roomOptions, TypedLobby.Default);
+        Btn_Match.SetActive(false);
     }
 
     void init()

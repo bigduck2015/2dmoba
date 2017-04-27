@@ -5,11 +5,11 @@ using UnityEngine;
 public class level : MonoBehaviour 
 {
     private GameObject player;
-    private List<Collider> mEnemyEnters;
+
 
     void Awake()
     {
-        this.GetComponent<skill>().del_damage += OnDamage;
+
 
     }
 
@@ -26,31 +26,10 @@ public class level : MonoBehaviour
 
         playerctrl ctrl = player.AddComponent<playerctrl>();
         ctrl.player = player.transform;
+
+        player.GetComponent<skill>().init();
     }
 
 
-    void OnEnemyTriggerEnter(Collider collider)
-    {
-        mEnemyEnters.Add(collider);
-    }
 
-    void OnEnemyTriggerExit(Collider collider)
-    {
-        mEnemyEnters.Remove(collider);
-    }
-
-    void OnDamage(GameObject ammo, data.skill skill)
-    {
-        if (skill.name == "Boom")
-        {
-            foreach (var item in mEnemyEnters)
-            {
-                if (item.gameObject == ammo)
-                {
-                    Debug.LogError("Boom");
-                    break;
-                }
-            }
-        }
-    }
 }
