@@ -16,7 +16,7 @@ public class enemy : MonoBehaviour
     [PunRPC]
     void OnPlayerInfo(string name, float hp)
     {
-        //mInfo = info;
+        mInfo.hp = hp;
     }
 
     void OnTriggerEnter(Collider collider)

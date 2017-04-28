@@ -54,9 +54,8 @@ public class skill : MonoBehaviour
         var Boom = PhotonNetwork.Instantiate("Boom", Vector3.zero, Quaternion.identity, 0).transform;
         Boom.position = new Vector3(transform.position.x, Boom.position.y, Boom.position.z);
 
-
-
-        var Target = Boom.position + new Vector3(5, 0, 0);
+        var offset = transform.forward * 5;
+        var Target = Boom.position + new Vector3(offset.x, 0, 0);
 
 		while (true) 
         {
