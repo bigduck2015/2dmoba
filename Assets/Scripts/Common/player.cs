@@ -29,6 +29,11 @@ public class player : MonoBehaviour
         init();
 	}
 
+    void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        
+    }
+
     void OnTriggerEnter(Collider collider)
     {
         Debug.LogError("On Player TriggerEnter");

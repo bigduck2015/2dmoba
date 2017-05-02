@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class level : MonoBehaviour 
 {
@@ -30,6 +31,8 @@ public class level : MonoBehaviour
         player.AddComponent<player>();
         player.AddComponent<skill>().init();
 
+        GameObject.Find("TouchMove").GetComponent<UIButtonMessage>().target = player;
+        GameObject.Find("TouchMove").GetComponent<UIButtonMessage>().functionName = "OnBtnMove";
     }
 
 

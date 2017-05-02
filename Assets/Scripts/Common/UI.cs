@@ -15,7 +15,12 @@ public class UI : MonoBehaviour
     {
         Instance = this;
 	}
-	
+
+    public void OnBtnMove()
+    {
+        Debug.LogError("UI.OnBtnMove");
+    }
+
     public void SetPlayerHP(float hp)
     {
         player.text = hp.ToString();

@@ -17,6 +17,7 @@ public class PunCall : MonoBehaviour
         {
             Debug.LogError("On Enemy PhotonInstantiate");
             this.gameObject.AddComponent<enemy>();
+            this.gameObject.AddComponent<enemyskill>();
             GameObject.Find("player").GetComponent<player>().SendPlayerInfo();
         }
     }

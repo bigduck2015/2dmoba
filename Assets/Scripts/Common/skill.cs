@@ -8,6 +8,7 @@ public class skill : MonoBehaviour
 
     public struct skillInfo
     {
+        public int id;
         public string name;
         public float damage;
     }
@@ -27,6 +28,7 @@ public class skill : MonoBehaviour
     public void init()
     {
         skillInfo boom = new skillInfo();
+        boom.id = 1;
         boom.name = "Boom";
         boom.damage = 10f;
 
@@ -39,6 +41,8 @@ public class skill : MonoBehaviour
         {
             mRollBoomCo = StartCoroutine(RollBoomCo());
             mRollBoomCDCo = StartCoroutine(RollBoomCDCo());
+
+            this.GetComponent<PhotonView>().RPC("OnSkill", PhotonTargets.Others, (byte)1);
         }
     }
 
