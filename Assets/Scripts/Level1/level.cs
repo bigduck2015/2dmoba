@@ -22,7 +22,7 @@ public class level : MonoBehaviour
 	
     void init()
     {
-        player = PhotonNetwork.Instantiate("player", new Vector3(0, 0.5f, 0), Quaternion.identity, 0);
+        player = PhotonNetwork.Instantiate("player", new Vector3(0, 0.5f, 0), Quaternion.Euler(0, 90, 0), 0);
         player.name = "player";
 
         playerctrl ctrl = player.AddComponent<playerctrl>();

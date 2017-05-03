@@ -1,12 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class playerctrl : MonoBehaviour 
 {
     public Transform player;
     public Transform enemy;
     private bool isMoveTouch;
+
+    enum phase
+    {
+        left,
+        right,
+        idel
+    }
 
     private Coroutine mTouchCtrlCo;
 
@@ -69,9 +77,15 @@ public class playerctrl : MonoBehaviour
     {
         float speed = 0;
         bool move = false;
+        var uiTest = GameObject.Find("UITest").GetComponent<Text>();
+        uiTest.text = "";
+        phase state = phase.idel;
+        phase curstate;
 
         while (true)
         {
+            //Debug.LogError(Time.deltaTime);
+
             if (isMoveTouch)
             {
                 if (Input.touchCount > 0)
@@ -82,8 +96,10 @@ public class playerctrl : MonoBehaviour
                     }
                     else if (Input.GetTouch(0).phase == TouchPhase.Ended)
                     {
-                
+                        isMoveTouch = false;
                         move = false;
+                        m_movelock = false;
+                        curstate = phase.idel;
                     }
                 }
             }
@@ -93,21 +109,31 @@ public class playerctrl : MonoBehaviour
                 // Get movement of the finger since last frame
                 Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
 
-                if (touchDeltaPosition.x > 0)
+                uiTest.text = touchDeltaPosition.x.ToString();
+
+                if (touchDeltaPosition.x > 2 && !m_movelock)
                 {
-                    speed = 0.1f;
+                    curstate = phase.right;
+                    speed = 5f;
+                    this.GetComponent<PhotonView>().RPC("OnMove", PhotonTargets.Others, speed);
+                    m_movelock = true;
                 }
-                else if (touchDeltaPosition.x < 0)
+                else if (touchDeltaPosition.x < -2 && !m_movelock)
                 {
-                    speed = -0.1f;
+                    curstate = phase.left;
+                    speed = -5f;
+                    this.GetComponent<PhotonView>().RPC("OnMove", PhotonTargets.Others, speed);
+                    m_movelock = true;
                 }
 
                 // Move object across XY plane
                 transform.Translate(0, 0, speed * Time.deltaTime);
             }
-            else
+
+            if (curstate != state)
             {
-                
+                m_movelock = false;
+                state = curstate;
             }
 
             yield return null;
