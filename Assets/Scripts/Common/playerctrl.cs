@@ -80,7 +80,7 @@ public class playerctrl : MonoBehaviour
         var uiTest = GameObject.Find("UITest").GetComponent<Text>();
         uiTest.text = "";
         phase state = phase.idel;
-        phase curstate;
+        phase curstate = phase.idel;
 
         while (true)
         {
@@ -98,8 +98,15 @@ public class playerctrl : MonoBehaviour
                     {
                         isMoveTouch = false;
                         move = false;
-                        m_movelock = false;
                         curstate = phase.idel;
+                        speed = 0;
+
+                        if (curstate != state)
+                        {
+                            state = curstate;
+                            this.GetComponent<PhotonView>().RPC("OnMove", PhotonTargets.Others, speed);
+                            Debug.LogError("speed = " + speed);
+                        }
                     }
                 }
             }
@@ -109,32 +116,31 @@ public class playerctrl : MonoBehaviour
                 // Get movement of the finger since last frame
                 Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
 
-                uiTest.text = touchDeltaPosition.x.ToString();
+                //uiTest.text = touchDeltaPosition.x.ToString();
 
-                if (touchDeltaPosition.x > 2 && !m_movelock)
+                if (touchDeltaPosition.x > 2)
                 {
+                    Debug.LogError("curstate = phase.right");
                     curstate = phase.right;
                     speed = 5f;
-                    this.GetComponent<PhotonView>().RPC("OnMove", PhotonTargets.Others, speed);
-                    m_movelock = true;
                 }
-                else if (touchDeltaPosition.x < -2 && !m_movelock)
+                else if (touchDeltaPosition.x < -2)
                 {
                     curstate = phase.left;
                     speed = -5f;
+                }
+
+                if (curstate != state)
+                {
+                    state = curstate;
                     this.GetComponent<PhotonView>().RPC("OnMove", PhotonTargets.Others, speed);
-                    m_movelock = true;
+                    Debug.LogError("speed = " + speed);
                 }
 
                 // Move object across XY plane
                 transform.Translate(0, 0, speed * Time.deltaTime);
             }
 
-            if (curstate != state)
-            {
-                m_movelock = false;
-                state = curstate;
-            }
 
             yield return null;
         }

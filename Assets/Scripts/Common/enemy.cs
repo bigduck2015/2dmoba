@@ -19,11 +19,7 @@ public class enemy : MonoBehaviour
 
     void Update()
     {
-        float target = m_offset_h + transform.position.x;
-        float move = Mathf.MoveTowards(transform.position.x, target, 0.1f);
-
-        transform.position = new Vector3(move, 0.5f, 0);
-
+        //transform.Translate(0, 0, m_offset_h * Time.deltaTime);
     }
 
     [PunRPC]
@@ -33,23 +29,12 @@ public class enemy : MonoBehaviour
     }
 
     [PunRPC]
-    void OnMove(float offset_h)
+    void OnMove(float speed)
     {
         //Debug.LogError("OnMove = " + offset_h);
         //GameObject.Find("UITest").GetComponent<Text>().text = "OnMove = " + offset_h;
 
-        if (offset_h > 0)
-        {
-            m_offset_h = 0.5f;
-        }
-        else if (offset_h < 0)
-        {
-            m_offset_h = -0.5f;
-        }
-        else
-        {
-            m_offset_h = 0;
-        }
+        m_offset_h = speed;
     }
 
     [PunRPC]

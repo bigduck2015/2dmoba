@@ -23,14 +23,14 @@ public class level0 : MonoBehaviour
 
     void OnDisconnectedFromPhoton()         //从Photon服务器断开  
     {  
-        Debug.Log("This client has disconnected from the server");  
+        Debug.Log("This client has disconnected from the server"); 
+        PhotonNetwork.ConnectUsingSettings("v1.0");
     }  
 
     void OnFailedToConnectToPhoton() //连接Photon服务器失败  
     {  
         Debug.Log("Failed to connect to Photon"); 
 
-        PhotonNetwork.ConnectUsingSettings("v1.0");
     }
 
     void OnCreatedRoom()                 //创建房间  
