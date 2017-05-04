@@ -19,7 +19,7 @@ public class enemy : MonoBehaviour
 
     void Update()
     {
-        //transform.Translate(0, 0, m_offset_h * Time.deltaTime);
+        transform.Translate(0, 0, m_offset_h * Time.deltaTime);
     }
 
     [PunRPC]

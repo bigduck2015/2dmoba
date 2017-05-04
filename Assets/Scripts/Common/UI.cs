@@ -31,4 +31,16 @@ public class UI : MonoBehaviour
         enemy.text = hp.ToString();
     }
 
+    public void CreateBtnSkill1()
+    {
+        var father = GameObject.Find("Canvas/Skills").transform;
+        var BtnSkill1 = logic.Instantiate("BtnSkill1", father);
+
+        level Level = GameObject.Find("Level").GetComponent<level>();
+
+        BtnSkill1.GetComponent<Button>().onClick.AddListener( delegate() 
+        {
+            Level.OnBtnSkill1();  
+        });
+    }
 }

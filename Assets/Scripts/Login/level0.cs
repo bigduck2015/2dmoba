@@ -18,7 +18,6 @@ public class level0 : MonoBehaviour
     {  
         Debug.Log("This client has connected to a server");
 
-        Btn_Match.SetActive(true);
     } 
 
     void OnDisconnectedFromPhoton()         //从Photon服务器断开  
@@ -33,6 +32,17 @@ public class level0 : MonoBehaviour
 
     }
 
+    void OnConnectedToMaster()
+    {
+        Debug.Log("This client has connected to a Master");
+        Btn_Match.SetActive(true);
+    }
+
+    void OnJoinedLobby()                //加入大厅  
+    {  
+        Debug.Log("We joined the lobby.");  
+    }  
+
     void OnCreatedRoom()                 //创建房间  
     {  
         Debug.Log("We have created a room.");  
@@ -43,7 +53,7 @@ public class level0 : MonoBehaviour
     {  
         Debug.Log("We have joined a room.");
 
-        //if(isCreater==false)
+        if(isCreater==false)
         {
             SceneManager.LoadScene(1);
         }
