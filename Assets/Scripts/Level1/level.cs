@@ -34,12 +34,17 @@ public class level : MonoBehaviour
         GameObject.Find("TouchMove").GetComponent<UIButtonMessage>().target = player;
         GameObject.Find("TouchMove").GetComponent<UIButtonMessage>().functionName = "OnBtnMove";
 
-        UI.Instance.CreateBtnSkill1();
+        UI.Instance.CreateBtnSkill();
     }
 
     public void OnBtnSkill1()
     {
         player.GetComponent<skill>().StartRollBoomCo();
+    }
+
+    public void  OnBtnSkill2()
+    {
+        player.GetComponent<skill>().StartHideCo();
     }
 
     void OnDestroy()
