@@ -42,4 +42,9 @@ public class level : MonoBehaviour
         player.GetComponent<skill>().StartRollBoomCo();
     }
 
+    void OnDestroy()
+    {
+        Debug.LogError("OnDestroy");
+        PhotonNetwork.LeaveRoom();
+    }
 }

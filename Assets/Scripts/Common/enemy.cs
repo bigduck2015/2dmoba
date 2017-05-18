@@ -19,13 +19,15 @@ public class enemy : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(0, 0, m_offset_h * Time.deltaTime);
+        transform.Translate(transform.right * -m_offset_h * Time.deltaTime);
     }
 
     [PunRPC]
     void OnPlayerInfo(string name, float hp)
     {
+        Debug.LogError("OnPlayerInfo hp = " + hp);
         mInfo.hp = hp;
+        UI.Instance.SetEnemyHP(mInfo.hp);
     }
 
     [PunRPC]
@@ -38,12 +40,15 @@ public class enemy : MonoBehaviour
     }
 
     [PunRPC]
-    void OnSkill(byte id)
+    void OnSkill(byte id, object value)
     {
         switch (id)
         {
             case 1:
                 this.GetComponent<enemyskill>().StartRollBoomCo();
+                break;
+            case 2:
+                this.GetComponent<enemyskill>().StartHideCo((float)value);
                 break;
             default:
                 Debug.LogError("non skill id!");
@@ -80,20 +85,33 @@ public class enemy : MonoBehaviour
     {
         this.gameObject.name = "enemy";
         GameObject.Find("player").GetComponent<playerctrl>().enemy = transform;
+
+
+
     }
 
     public void CheckDamage(GameObject ammo, skill.skillInfo skill)
     {
         var id = ammo.GetComponent<PhotonView>().viewID;
 
+        if (mEnters.Contains(id))
+        {
+            mEnters.Remove(id);
+        }
+        else
+        {
+            return;
+        }
+
         if (skill.name == "Boom")
         {
-            if (mEnters.Contains(id))
-            {
-                Debug.LogError("Boom");
-                mEnters.Remove(id);
-                this.GetComponent<PhotonView>().RPC("OnRPCDamage", PhotonTargets.Others, id, skill.damage);
-            }
+            Debug.LogError("Boom");
+            this.GetComponent<PhotonView>().RPC("OnRPCDamage", PhotonTargets.Others, id, skill.damage);
+        }
+        else if (skill.name == "Hide")
+        {
+            Debug.LogError("Hide");
+            this.GetComponent<PhotonView>().RPC("OnRPCDamage", PhotonTargets.Others, id, skill.damage);
         }
     }
 

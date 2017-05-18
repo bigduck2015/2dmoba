@@ -22,12 +22,13 @@ public class enemyskill : MonoBehaviour
         var Boom = logic.Instantiate("Boom", null).transform;
         Boom.position = new Vector3(transform.position.x, Boom.position.y, Boom.position.z);
 
-        var offset = transform.forward * 5;
-        var Target = Boom.position + new Vector3(offset.x, 0, 0);
+        var Target = transform.forward * 5 + Boom.transform.position;
 
         while (true) 
         {
-            Boom.position = Vector3.MoveTowards (Boom.position, Target, 0.1f);
+            Boom.position = Vector3.MoveTowards (Boom.position, Target, 0.2f);
+
+            Boom.RotateAround(Boom.position, transform.right, 20);
 
             if (Boom.position == Target)
             {
@@ -40,5 +41,17 @@ public class enemyskill : MonoBehaviour
 
             yield return new WaitForSeconds(0.02f);
         }
+    }
+
+    public void StartHideCo(float duration)
+    {
+        StartCoroutine(HideCo(duration));
+    }
+
+    IEnumerator HideCo(float duration)
+    {
+        this.gameObject.SetActive(false);
+        yield return new WaitForSeconds(duration);
+        this.gameObject.SetActive(true);
     }
 }

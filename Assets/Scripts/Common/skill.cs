@@ -11,6 +11,7 @@ public class skill : MonoBehaviour
         public int id;
         public string name;
         public float damage;
+        public float duration;
     }
 
 	private Coroutine mRollBoomCo;
@@ -33,6 +34,14 @@ public class skill : MonoBehaviour
         boom.damage = 10f;
 
         Dic_Skill.Add("Boom", boom);
+
+        skillInfo hide = new skillInfo();
+        hide.id = 2;
+        hide.name = "Hide";
+        hide.damage = 0f;
+        hide.duration = 3f;
+
+        Dic_Skill.Add("Hide", hide);
     }
 
     public void StartRollBoomCo()
@@ -55,15 +64,17 @@ public class skill : MonoBehaviour
 	IEnumerator RollBoomCo()
 	{
         var enemy = GameObject.Find("enemy");
-        var Boom = PhotonNetwork.Instantiate("Boom", Vector3.zero, Quaternion.identity, 0).transform;
+		var Boom = logic.Instantiate("Boom", null).transform;
+
         Boom.position = new Vector3(transform.position.x, Boom.position.y, Boom.position.z);
 
-        var offset = transform.forward * 5;
-        var Target = Boom.position + new Vector3(offset.x, 0, 0);
+        var Target = transform.forward * 5 + Boom.transform.position;
 
 		while (true) 
         {
-            Boom.position = Vector3.MoveTowards (Boom.position, Target, 0.1f);
+            Boom.position = Vector3.MoveTowards (Boom.position, Target, 0.2f);
+
+            Boom.RotateAround(Boom.position, transform.right, 20);
 
             if (Boom.position == Target)
             {
@@ -71,7 +82,7 @@ public class skill : MonoBehaviour
 
                 enemy.GetComponent<enemy>().CheckDamage(Boom.gameObject, Dic_Skill["Boom"]);
 
-                PhotonNetwork.Destroy(Boom.gameObject);
+                Destroy(Boom.gameObject);
 
                 break;
             }
@@ -79,4 +90,19 @@ public class skill : MonoBehaviour
             yield return new WaitForSeconds(0.02f);
 		}
 	}
+
+    public void StartHideCo()
+    {
+        StartCoroutine(HideCo());
+    }
+
+    IEnumerator HideCo()
+    {
+        var skill = Dic_Skill["Hide"];
+        var player = GameObject.Find("player");
+        player.GetComponent<PhotonView>().RPC("OnSkill", PhotonTargets.Others, skill.id, skill.duration);
+        player.transform.Find("Cube").GetComponent<MeshRenderer>().material.color = Color.gray;
+        yield return new WaitForSeconds(skill.duration);
+        player.transform.Find("Cube").GetComponent<MeshRenderer>().material.color = Color.white;
+    }
 }

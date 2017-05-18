@@ -20,13 +20,13 @@ public class player : MonoBehaviour
 
     void Awake()
     {
-        
+        init();
     }
 
 	// Use this for initialization
 	void Start () 
     {
-        init();
+        
 	}
 
     void OnPhotonInstantiate(PhotonMessageInfo info)
@@ -115,13 +115,16 @@ public class player : MonoBehaviour
     {
         mInfo = new playerInfo();
         mInfo.name = "";
-        mInfo.hp = 100;
+        mInfo.hp = 90;
 
+        UI.Instance.SetPlayerHP(mInfo.hp);
 
+        Debug.LogError("player.init()");
     }
 
     public void SendPlayerInfo()
     {
+        Debug.LogError("player.SendPlayerInfo()");
         this.GetComponent<PhotonView>().RPC("OnPlayerInfo", PhotonTargets.Others, mInfo.name, mInfo.hp);
     }
 

@@ -8,6 +8,7 @@ public class playerctrl : MonoBehaviour
     public Transform player;
     public Transform enemy;
     private bool isMoveTouch;
+	private float m_pc_speed;
 
     enum phase
     {
@@ -29,27 +30,25 @@ public class playerctrl : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        float offset_h = Input.GetAxis("Horizontal");
-        //Debug.LogError(offset_h);
 
-        if (offset_h != 0 && !m_movelock)
+		if (Input.GetKeyDown (KeyCode.A)) 
         {
-            this.GetComponent<PhotonView>().RPC("OnMove", PhotonTargets.Others, offset_h);
-            m_movelock = true;
-            //Debug.LogError("move");
+            m_pc_speed = -5;
+            this.GetComponent<PhotonView> ().RPC ("OnMove", PhotonTargets.Others, m_pc_speed);
+		}
+        else if (Input.GetKeyDown (KeyCode.D)) 
+        {
+            m_pc_speed = 5;
+            this.GetComponent<PhotonView> ().RPC ("OnMove", PhotonTargets.Others, m_pc_speed);
         }
 
-        if(offset_h == 0 && m_movelock)
+        if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
         {
-            this.GetComponent<PhotonView>().RPC("OnMove", PhotonTargets.Others, offset_h);
-            m_movelock = false;
-            //Debug.LogError("stop");
+            m_pc_speed = 0;
+            this.GetComponent<PhotonView> ().RPC ("OnMove", PhotonTargets.Others, m_pc_speed);
         }
-
-        float target = offset_h + player.position.x;
-        float move = Mathf.MoveTowards(player.position.x, target, 0.1f);
-
-        player.position = new Vector3(move, 0.5f, 0);
+            
+        transform.Translate(transform.right * -m_pc_speed * Time.deltaTime);
 
         if (enemy != null)
         {
@@ -64,7 +63,6 @@ public class playerctrl : MonoBehaviour
 
     void OnBtnMove()
     {
-        //Debug.LogError("playerctrl.OnBtnMove");
         isMoveTouch = true;
     }
 
@@ -138,7 +136,7 @@ public class playerctrl : MonoBehaviour
                 }
 
                 // Move object across XY plane
-                transform.Translate(0, 0, speed * Time.deltaTime);
+                transform.Translate(transform.right * -speed * Time.deltaTime);
             }
 
 
