@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class level : MonoBehaviour 
 {
@@ -35,6 +36,12 @@ public class level : MonoBehaviour
         GameObject.Find("TouchMove").GetComponent<UIButtonMessage>().functionName = "OnBtnMove";
 
         UI.Instance.CreateBtnSkill();
+    }
+
+    void OnLeftRoom()                   //离开房间  
+    {
+        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene(1);
     }
 
     public void OnBtnSkill1()
